@@ -6,6 +6,7 @@ import Link from "./Link";
 class LinkList extends Component {
   componentDidMount() {
     this._subscribeToNewLinks();
+    this._subscribeToNewVotes();
   }
 
   render() {
@@ -79,6 +80,39 @@ class LinkList extends Component {
         };
         return result;
       }
+    });
+  };
+
+  _subscribeToNewVotes = () => {
+    this.props.feedQuery.subscribeToMore({
+      document: gql`
+        subscription {
+          newVote {
+            node {
+              id
+              link {
+                id
+                url
+                description
+                createdAt
+                postedBy {
+                  id
+                  name
+                }
+                votes {
+                  id
+                  user {
+                    id
+                  }
+                }
+              }
+              user {
+                id
+              }
+            }
+          }
+        }
+      `
     });
   };
 }
